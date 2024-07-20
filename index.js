@@ -2,6 +2,8 @@ let welcomeSection = document.querySelector('.welcome-section');
 let mainContainer = document.querySelector('#main-container');
 let gridContainer = document.querySelector('.grid-container');
 let startButton = document.querySelector('#button-start');
+
+document.querySelector('#main-container h3').innerText = 'Player X turn'
 let playerOne = true;
 let step = 0;
 let playerOneSelected = '';
@@ -42,7 +44,8 @@ function handleGridItemClick() {
     nodes.forEach((node, index) => {
         node.addEventListener('click', () => {
             placemarker(node, index + 1);
-            processClick(nodes, node, index);
+            processClick();
+            showPlayerStatus();
         })
     })
     console.log(nodes);
@@ -65,7 +68,7 @@ function placemarker(node, index) {
     }
 }
 //1,3,4
-function processClick(nodes, node, index) {
+function processClick() {
 
     if (step <= 4) {
         return;
@@ -133,10 +136,10 @@ function processClick(nodes, node, index) {
         document.querySelector('.card-container').style.display = 'block'
         document.querySelector('#restart-button').style.display = 'block'
         if (isPlayerOneWon) {
-            document.querySelector('.card p').innerHTML = 'Player 1 Won';
+            document.querySelector('.card p').innerHTML = 'Player X Won';
         }
         else if (isPlayerTwoWon) {
-            document.querySelector('.card p').innerHTML = 'Player 2 Won';
+            document.querySelector('.card p').innerHTML = 'Player O Won';
         }
         else if(!isPlayerOneWon && !isPlayerTwoWon && step ==9) {
             isDraw = true;
@@ -146,6 +149,19 @@ function processClick(nodes, node, index) {
   
 
 
+}
+
+function showPlayerStatus() {
+    let status = ''
+    let statusHeading = document.querySelector('#main-container h3');
+    console.log(statusHeading);
+    if(step % 2 == 0) {
+        status = 'Player X turn'
+    }
+    else {
+        status = 'Player O turn';
+    }
+    statusHeading.innerText = status;
 }
 
 document.querySelector('#restart-button').addEventListener('click', () => {

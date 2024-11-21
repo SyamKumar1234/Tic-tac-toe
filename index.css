@@ -1,11 +1,14 @@
-*{
+* {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
 }
+
 body {
     overflow: hidden;
 }
+
 .welcome-container {
     width: 70%;
     height: 70%;
@@ -18,11 +21,13 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 .welcome-image {
     height: 100%;
     width: 100%;
     background: url("./assets/tic tac toe.svg") no-repeat center;
 }
+
 .button-start {
     width: 25%;
     padding: 1% 1%;
@@ -33,6 +38,7 @@ body {
     font-size: 1rem;
     cursor: pointer;
 }
+
 .button-start2 {
     margin-top: 1%;
 }
@@ -41,6 +47,7 @@ body {
     background-color: rgba(127, 255, 212, .8);
     transition: background-color 0.3s ease;
 }
+
 /* #button-start {
     padding: 3% 19%;
     border-radius: 9px;
@@ -59,14 +66,16 @@ body {
     flex-direction: column;
     justify-content: center;
 }
+
 #main-container H3 {
     margin-top: 9%;
     font-size: x-large;
-    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     color: #1d4851;
     animation: fade ease-in .5s;
     text-shadow: 4px 3px 0px rgba(0, 0, 0, .2);
 }
+
 .grid-container {
     display: grid;
     grid-template-columns: 90px 90px 90px;
@@ -78,25 +87,29 @@ body {
 .grid-item {
     cursor: pointer;
     /* background-color: #ffe37f; */
-    background: linear-gradient(to right,#df6363, #ffb88c);
+    background: linear-gradient(to right, #df6363, #ffb88c);
     border: 1px solid rgb(255 248 248 / 70%);
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 4rem;
-    font-family: monospace;
+}
+.grid-item p {
+    font-family: sans-serif;
 }
 
 .grid-item.disabled {
     pointer-events: none;
 }
+
 .card-container {
     position: absolute;
     top: 58%;
     display: none;
 }
+
 .card {
-    width:130px;
+    width: 130px;
     height: 60px;
     box-shadow: 2px 2px 3px black;
     display: flex;
@@ -108,6 +121,7 @@ body {
     animation: scale infinite 1s;
     text-align: center;
 }
+
 .card p {
     color: white;
     font-size: 1rem;
@@ -118,16 +132,24 @@ body {
     top: 85%;
     border-radius: 8px;
     border: none;
-    background: linear-gradient(to right, #2dc1e4, #e8ecc7);
+    /* background: linear-gradient(to right, #2dc1e4, #e8ecc7); */
     padding: .8% 3%;
     visibility: hidden;
     /* margin-top: 1%; */
     cursor: pointer;
     color: white;
+
+    background: linear-gradient(45deg, #00C9FF, #92FE9D); /* Bright pink to gold gradient */
+    /* color: white; */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Add depth */
+    /* cursor: pointer; */
+    transition: all 0.3s ease; /* Smooth transitions */
 }
+
 #restart-button:hover {
     color: rgba(255, 255, 255, .7);
 }
+
 .fireworks {
     position: absolute;
     top: 0;
@@ -137,13 +159,16 @@ body {
     z-index: 99999;
     pointer-events: none;
 }
+
 @keyframes fade {
     0% {
         opacity: .2;
     }
+
     50% {
         opacity: .5
     }
+
     100% {
         opacity: 1
     }
@@ -153,9 +178,11 @@ body {
     0% {
         scale: 1;
     }
+
     50% {
         scale: 1.1;
     }
+
     100% {
         scale: 1;
     }
@@ -166,33 +193,42 @@ body {
         width: 70%;
         height: 40%;
     }
+
     .button-start {
-        width: 50%;
+        margin-top: 2%;
+        width: 60%;
+        padding: 3% 1%;
         font-size: 0.8rem;
     }
+
     #main-container H3 {
         margin-top: 30%;
         font-size: medium;
     }
+
     .grid-container {
         grid-template-columns: 60px 60px 60px;
         grid-template-rows: 60px 60px 60px;
         width: 180px;
         /* margin-top: .5%;s */
     }
-    .grid-item { 
+
+    .grid-item {
         font-size: 2rem;
     }
+
     .card-container {
         top: 57%;
     }
+
     .card {
-        width:85px;
+        width: 85px;
         height: 40px;
         box-shadow: 1px 1px 2px black;
         font-size: medium;
         text-align: center;
     }
+
     #restart-button {
         top: 80%;
         border-radius: 8px;

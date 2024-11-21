@@ -10,8 +10,10 @@ let playerOne = true;
 let step = 0;
 let playerOneSelected = "";
 let playerTwoSelected = "";
+let computerSelected = "";
 let isPlayerOneWon = false;
 let isPlayerTwoWon = false;
+let isComputerwon = false;
 let isDraw = false;
 let isPlayWithComputer = false;
 let winConditions = ["123", "456", "789", "147", "258", "369", "159", "357"];
@@ -22,8 +24,8 @@ mainContainer.style.display = "none";
 
 [startWithFriendButton, startWithComputerButton].forEach((button) => {
   button.addEventListener("click", () => {
-    if(button == startWithComputerButton){
-        isPlayWithComputer = true;
+    if (button == startWithComputerButton) {
+      isPlayWithComputer = true;
     }
 
     console.log(welcomeContainer);
@@ -45,6 +47,7 @@ function appendGridItemsToGridContainer() {
     let p = document.createElement("p");
     gridElem.appendChild(p);
     gridElem.className = "grid-item";
+    gridElem.id = `cell-${i + 1}`;
     gridContainer.appendChild(gridElem);
   }
 }
@@ -56,12 +59,15 @@ function handleGridItemClick() {
       placemarker(node, index + 1);
       processClick();
       showPlayerStatus();
-      if(isPlayWithComputer) {
-        disableCells()
+      //in computer mode next move will be by the computer.
+      if (isPlayWithComputer && !isPlayerOneWon && !isPlayerTwoWon && step !=9) {
+        disableCells();
         setTimeout(() => {
-            makeComputerMove();
-            enableCells();
-        }, 500)
+          makeComputerMove();
+          enableCells();
+          processClick();
+          showPlayerStatus();
+        }, 500);
       }
     });
   });
@@ -90,7 +96,23 @@ function placemarker(node, index) {
 }
 
 function makeComputerMove() {
+  const cells = Array.from(document.querySelectorAll(".grid-item"));
+  const randomPosition = findRandomCellPosition();
+  console.log("randomPosition", randomPosition);
 
+  cells[randomPosition].children[0].innerHTML = "o";
+  step = step + 1;
+
+  computerSelected = computerSelected.concat(randomPosition + 1);
+  console.log("computerSelected",computerSelected);
+  
+}
+
+function findRandomCellPosition() {
+  const cells = Array.from(document.querySelectorAll(".grid-item"));
+  const emptyCells = cells.filter(cell => cell.children[0].innerHTML == "")
+  const randomPosition = Math.floor(Math.random() * (emptyCells.length - 1));
+  return cells.indexOf(emptyCells[randomPosition]);
 }
 //1,3,4
 function processClick() {
@@ -98,58 +120,25 @@ function processClick() {
     return;
   }
   if (step % 2 == 0) {
-    let selected = playerTwoSelected.split("").sort().join("");
-    let check = winConditions.includes(selected);
-    if (!check) {
-      for (let win of winConditions) {
-        let winArray = win.split("");
-        let flag = 0;
-
-        for (let elem of winArray) {
-          if (!selected.includes(elem)) {
-            flag = 0;
-            break;
-          } else {
-            flag = 1;
-          }
-        }
-        if (flag == 1) {
-          isPlayerTwoWon = true;
-          break;
-        }
-      }
-    } else {
-      isPlayerTwoWon = true;
+    if(isPlayWithComputer) {
+      isComputerwon = winConditions.some(win => {
+        return win.split("").every(letter => computerSelected.includes(letter))
+      }) 
     }
+    else {
+      isPlayerTwoWon = winConditions.some(win => {
+        return win.split("").every(letter => playerTwoSelected.includes(letter))
+      }) 
+    }
+    
   } else {
-    let selected = playerOneSelected.split("").sort().join("");
-    let check = winConditions.includes(selected);
-    if (!check) {
-      for (let win of winConditions) {
-        let winArray = win.split("");
-        let flag = 0;
+    isPlayerOneWon = winConditions.some(win => {
+      return win.split("").every(letter => playerOneSelected.includes(letter))
+    }) 
 
-        for (let elem of winArray) {
-          if (!selected.includes(elem)) {
-            flag = 0;
-            break;
-          } else {
-            flag = 1;
-          }
-        }
-        if (flag == 1) {
-          isPlayerOneWon = true;
-          break;
-        }
-      }
-      console.log(isPlayerOneWon);
-    } else {
-      isPlayerOneWon = true;
-    }
-    console.log(playerOneSelected.split("").sort().join(""));
   }
 
-  if (isPlayerOneWon || isPlayerTwoWon || step == 9) {
+  if (isPlayerOneWon || isPlayerTwoWon || isComputerwon || step == 9) {
     const resultCard = document.getElementsByClassName("card")[0];
     resultCard.style.background = "green";
     document.querySelector(".card-container").style.display = "block";
@@ -160,7 +149,11 @@ function processClick() {
     } else if (isPlayerTwoWon) {
       document.querySelector(".card p").innerHTML = "Player O Won";
       showFireworks();
-    } else if (!isPlayerOneWon && !isPlayerTwoWon && step == 9) {
+    } else if(isComputerwon) {
+      document.querySelector(".card p").innerHTML = "Computer Won😥";
+      resultCard.style.background = "orangered";
+    }
+    else if (!isPlayerOneWon && !isPlayerTwoWon && step == 9) {
       isDraw = true;
       document.querySelector(".card p").innerHTML = "It's a Draw";
       resultCard.style.background = "blue";
@@ -171,7 +164,6 @@ function processClick() {
 function showPlayerStatus() {
   let status = "";
   let statusHeading = document.querySelector("#main-container h3");
-  console.log(statusHeading);
   if (step % 2 == 0) {
     status = "Player X turn";
   } else {
@@ -183,6 +175,7 @@ function showPlayerStatus() {
 document.querySelector("#restart-button").addEventListener("click", () => {
   document.querySelector(".card-container").style.display = "none";
   document.querySelector("#restart-button").style.visibility = "hidden";
+  document.querySelector("#main-container h3").innerText = "Player X turn";
 
   if (fireworks) {
     fireworks.stop();
@@ -261,12 +254,12 @@ function showFireworks() {
 }
 
 function enableCells() {
-    document.querySelectorAll(".grid-item").forEach(cell => {
-        cell.classList.add("disabled")
-    })
+  document.querySelectorAll(".grid-item").forEach((cell) => {
+    cell.classList.remove("disabled");
+  });
 }
 function disableCells() {
-    document.querySelectorAll(".grid-item").forEach(cell => {
-        cell.classList.remove("disabled")
-    })
+  document.querySelectorAll(".grid-item").forEach((cell) => {
+    cell.classList.add("disabled");
+  });
 }

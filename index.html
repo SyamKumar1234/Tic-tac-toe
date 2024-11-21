@@ -1,30 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="index.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="index.css" />
+    <link
+      rel="preload"
+      href="assets/tic tac toe.svg"
+      as="image"
+      type="image/svg+xml"
+    />
+    <link rel="preload" href="assets/kids2.jpg" as="image" />
     <script src="index.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
 
     <title>Tic tac toe</title>
-</head>
-<body>
-    <div class="welcome-section">
-        <button id="button-start">Let's Start 😀</button>
-    </div>
+  </head>
+  <body>
+    <section class="welcome-container">
+      <div class="welcome-image"></div>
+      <!-- <button id="button-start">Let's Start 😀</button> -->
+      <button class="button-start">Play with Friend 🙎‍♂️</button>
+      <button class="button-start button-start2">Play with computer 💻</button>
+    </section>
+
     <main id="main-container">
-        <h3></h3>
-        <div class="grid-container">
-        </div>
+      <h3></h3>
+      <div class="grid-container"></div>
 
-        <div class="card-container">
-            <div class="card">
-                <p></p>
-            </div>
+      <div class="card-container">
+        <div class="card">
+          <p></p>
         </div>
-        <button id="restart-button">Go again</button>
+      </div>
+      <button id="restart-button">Go again</button>
     </main>
-    
-
-</body>
+    <div class="fireworks"></div>
+  </body>
 </html>

@@ -1,188 +1,272 @@
-let welcomeSection = document.querySelector('.welcome-section');
-let mainContainer = document.querySelector('#main-container');
-let gridContainer = document.querySelector('.grid-container');
-let startButton = document.querySelector('#button-start');
-
-document.querySelector('#main-container h3').innerText = 'Player X turn'
+let welcomeContainer = document.querySelector(".welcome-container");
+let mainContainer = document.querySelector("#main-container");
+let gridContainer = document.querySelector(".grid-container");
+let startWithFriendButton = document.getElementsByClassName("button-start")[0];
+let startWithComputerButton =
+  document.getElementsByClassName("button-start")[1];
+let fireworks;
+document.querySelector("#main-container h3").innerText = "Player X turn";
 let playerOne = true;
 let step = 0;
-let playerOneSelected = '';
-let playerTwoSelected = '';
+let playerOneSelected = "";
+let playerTwoSelected = "";
 let isPlayerOneWon = false;
 let isPlayerTwoWon = false;
 let isDraw = false;
-let winConditions = ['123', '456', '789', '147', '258', '369', '159', '357'];
+let isPlayWithComputer = false;
+let winConditions = ["123", "456", "789", "147", "258", "369", "159", "357"];
 
-document.querySelector('.card-container').style.display = 'none'
-document.querySelector('#restart-button').style.display = 'none'
-mainContainer.style.display = 'none'
-startButton.addEventListener('click', () => {
-    console.log(welcomeSection);
-    welcomeSection.style.display = 'none'
-    mainContainer.style.display = 'flex'
-    document.body.style.background = "url('./assets/kids2.jpg') no-repeat center fixed"
+document.querySelector(".card-container").style.display = "none";
+document.querySelector("#restart-button").style.visibility = "hidden";
+mainContainer.style.display = "none";
+
+[startWithFriendButton, startWithComputerButton].forEach((button) => {
+  button.addEventListener("click", () => {
+    if(button == startWithComputerButton){
+        isPlayWithComputer = true;
+    }
+
+    console.log(welcomeContainer);
+    welcomeContainer.style.display = "none";
+    mainContainer.style.display = "flex";
+    document.body.style.background =
+      "url('./assets/kids2.jpg') no-repeat center fixed";
     document.body.style.backgroundSize = "100% 100%";
-    document.body.style.transition = 'background ease-in 1s'
+    // document.body.style.transition = 'background ease-in 1s'
 
     appendGridItemsToGridContainer();
     handleGridItemClick();
-
-})
+  });
+});
 
 function appendGridItemsToGridContainer() {
-    for (let i = 0; i < 9; i++) {
-        let gridElem = document.createElement('div');
-        let p = document.createElement('p');
-        gridElem.appendChild(p)
-        gridElem.className = 'grid-item';
-        gridContainer.appendChild(gridElem);
-    }
+  for (let i = 0; i < 9; i++) {
+    let gridElem = document.createElement("div");
+    let p = document.createElement("p");
+    gridElem.appendChild(p);
+    gridElem.className = "grid-item";
+    gridContainer.appendChild(gridElem);
+  }
 }
 
 function handleGridItemClick() {
-    let nodes = gridContainer.querySelectorAll('.grid-item');
-    nodes.forEach((node, index) => {
-        node.addEventListener('click', () => {
-            placemarker(node, index + 1);
-            processClick();
-            showPlayerStatus();
-        })
-    })
-    console.log(nodes);
+  let nodes = gridContainer.querySelectorAll(".grid-item");
+  nodes.forEach((node, index) => {
+    node.addEventListener("click", () => {
+      placemarker(node, index + 1);
+      processClick();
+      showPlayerStatus();
+      if(isPlayWithComputer) {
+        disableCells()
+        setTimeout(() => {
+            makeComputerMove();
+            enableCells();
+        }, 500)
+      }
+    });
+  });
+  console.log(nodes);
 }
 
 function placemarker(node, index) {
-    if (!node.children[0].innerHTML && !isPlayerOneWon && !isPlayerTwoWon && !isDraw) {
-        if (step % 2 == 0) {
-            node.children[0].innerHTML = 'x'
-            step = step + 1
-            playerOneSelected = playerOneSelected.concat(index);
-            console.log(playerOneSelected);
-        }
-        else {
-            node.children[0].innerHTML = 'o'
-            step = step + 1;
-            playerTwoSelected = playerTwoSelected.concat(index);
-            console.log(playerTwoSelected);
-        }
+  if (
+    !node.children[0].innerHTML &&
+    !isPlayerOneWon &&
+    !isPlayerTwoWon &&
+    !isDraw
+  ) {
+    if (step % 2 == 0) {
+      node.children[0].innerHTML = "x";
+      step = step + 1;
+      playerOneSelected = playerOneSelected.concat(index);
+      console.log(playerOneSelected);
+    } else {
+      node.children[0].innerHTML = "o";
+      step = step + 1;
+      playerTwoSelected = playerTwoSelected.concat(index);
+      console.log(playerTwoSelected);
     }
+  }
+}
+
+function makeComputerMove() {
+
 }
 //1,3,4
 function processClick() {
+  if (step <= 4) {
+    return;
+  }
+  if (step % 2 == 0) {
+    let selected = playerTwoSelected.split("").sort().join("");
+    let check = winConditions.includes(selected);
+    if (!check) {
+      for (let win of winConditions) {
+        let winArray = win.split("");
+        let flag = 0;
 
-    if (step <= 4) {
-        return;
+        for (let elem of winArray) {
+          if (!selected.includes(elem)) {
+            flag = 0;
+            break;
+          } else {
+            flag = 1;
+          }
+        }
+        if (flag == 1) {
+          isPlayerTwoWon = true;
+          break;
+        }
+      }
+    } else {
+      isPlayerTwoWon = true;
     }
-    if (step % 2 == 0) {
-        let selected = playerTwoSelected.split('').sort().join('');
-        let check = winConditions.includes(selected);
-        if (!check) {
+  } else {
+    let selected = playerOneSelected.split("").sort().join("");
+    let check = winConditions.includes(selected);
+    if (!check) {
+      for (let win of winConditions) {
+        let winArray = win.split("");
+        let flag = 0;
 
-            for (let win of winConditions) {
-                let winArray = win.split('');
-                let flag = 0;
-
-                for (let elem of winArray) {
-                    if (!selected.includes(elem)) {
-                        flag = 0;
-                        break;
-                    }
-                    else {
-                        flag = 1;
-                    }
-                }
-                if (flag == 1) {
-                    isPlayerTwoWon = true
-                    break;
-                }
-            }
+        for (let elem of winArray) {
+          if (!selected.includes(elem)) {
+            flag = 0;
+            break;
+          } else {
+            flag = 1;
+          }
         }
-        else {
-            isPlayerTwoWon = true;
+        if (flag == 1) {
+          isPlayerOneWon = true;
+          break;
         }
+      }
+      console.log(isPlayerOneWon);
+    } else {
+      isPlayerOneWon = true;
     }
-    else {
-        let selected = playerOneSelected.split('').sort().join('');
-        let check = winConditions.includes(selected);
-        if (!check) {
+    console.log(playerOneSelected.split("").sort().join(""));
+  }
 
-            for (let win of winConditions) {
-                let winArray = win.split('');
-                let flag = 0;
-
-                for (let elem of winArray) {
-                    if (!selected.includes(elem)) {
-                        flag = 0;
-                        break;
-                    }
-                    else {
-                        flag = 1;
-                    }
-                }
-                if (flag == 1) {
-                    isPlayerOneWon = true
-                    break;
-                }
-            }
-            console.log(isPlayerOneWon);
-        }
-        else {
-            isPlayerOneWon = true
-        }
-        console.log(playerOneSelected.split('').sort().join(''));
+  if (isPlayerOneWon || isPlayerTwoWon || step == 9) {
+    const resultCard = document.getElementsByClassName("card")[0];
+    resultCard.style.background = "green";
+    document.querySelector(".card-container").style.display = "block";
+    document.querySelector("#restart-button").style.visibility = "visible";
+    if (isPlayerOneWon) {
+      document.querySelector(".card p").innerHTML = "Player X Won";
+      showFireworks();
+    } else if (isPlayerTwoWon) {
+      document.querySelector(".card p").innerHTML = "Player O Won";
+      showFireworks();
+    } else if (!isPlayerOneWon && !isPlayerTwoWon && step == 9) {
+      isDraw = true;
+      document.querySelector(".card p").innerHTML = "It's a Draw";
+      resultCard.style.background = "blue";
     }
-
-    if(isPlayerOneWon || isPlayerTwoWon || step ==9) {
-        document.querySelector('.card-container').style.display = 'block'
-        document.querySelector('#restart-button').style.display = 'block'
-        if (isPlayerOneWon) {
-            document.querySelector('.card p').innerHTML = 'Player X Won';
-        }
-        else if (isPlayerTwoWon) {
-            document.querySelector('.card p').innerHTML = 'Player O Won';
-        }
-        else if(!isPlayerOneWon && !isPlayerTwoWon && step ==9) {
-            isDraw = true;
-            document.querySelector('.card p').innerHTML = "It's a Draw";
-        }
-    }
-  
-
-
+  }
 }
 
 function showPlayerStatus() {
-    let status = ''
-    let statusHeading = document.querySelector('#main-container h3');
-    console.log(statusHeading);
-    if(step % 2 == 0) {
-        status = 'Player X turn'
-    }
-    else {
-        status = 'Player O turn';
-    }
-    statusHeading.innerText = status;
+  let status = "";
+  let statusHeading = document.querySelector("#main-container h3");
+  console.log(statusHeading);
+  if (step % 2 == 0) {
+    status = "Player X turn";
+  } else {
+    status = "Player O turn";
+  }
+  statusHeading.innerText = status;
 }
 
-document.querySelector('#restart-button').addEventListener('click', () => {
-    document.querySelector('.card-container').style.display = 'none';
-    document.querySelector('#restart-button').style.display = 'none';
+document.querySelector("#restart-button").addEventListener("click", () => {
+  document.querySelector(".card-container").style.display = "none";
+  document.querySelector("#restart-button").style.visibility = "hidden";
 
-    let nodes = gridContainer.querySelectorAll('.grid-item');
-    nodes.forEach((node, index) => {
-        node.children[0].innerHTML = ""
+  if (fireworks) {
+    fireworks.stop();
+    // fireworks.clear();
+  }
+  let nodes = gridContainer.querySelectorAll(".grid-item");
+  nodes.forEach((node, index) => {
+    node.children[0].innerHTML = "";
+  });
+  playerOne = true;
+  step = 0;
+  playerOneSelected = "";
+  playerTwoSelected = "";
+  isPlayerOneWon = false;
+  isPlayerTwoWon = false;
+  isDraw = false;
+});
+
+function showFireworks() {
+  // const sound = { enabled: true}
+  if (!fireworks) {
+    const container = document.querySelector(".fireworks");
+    fireworks = new Fireworks.default(container, {
+      autoresize: true,
+      opacity: 0.5,
+      acceleration: 1.05,
+      friction: 0.97,
+      gravity: 1.5,
+      particles: 50,
+      traceLength: 3,
+      traceSpeed: 10,
+      explosion: 5,
+      intensity: 30,
+      flickering: 50,
+      lineStyle: "round",
+      hue: {
+        min: 0,
+        max: 360,
+      },
+      delay: {
+        min: 30,
+        max: 60,
+      },
+      rocketsPoint: {
+        min: 50,
+        max: 50,
+      },
+      lineWidth: {
+        explosion: {
+          min: 1,
+          max: 3,
+        },
+        trace: {
+          min: 1,
+          max: 2,
+        },
+      },
+      brightness: {
+        min: 50,
+        max: 80,
+      },
+      decay: {
+        min: 0.015,
+        max: 0.03,
+      },
+      mouse: {
+        click: false,
+        move: false,
+        max: 1,
+      },
+    });
+    fireworks.start();
+  } else {
+    fireworks.start();
+  }
+}
+
+function enableCells() {
+    document.querySelectorAll(".grid-item").forEach(cell => {
+        cell.classList.add("disabled")
     })
-    playerOne = true;
-    step = 0;
-    playerOneSelected = '';
-    playerTwoSelected = '';
-    isPlayerOneWon = false;
-    isPlayerTwoWon = false;
-    isDraw = false;
-
-})
-
-
-
-
-
+}
+function disableCells() {
+    document.querySelectorAll(".grid-item").forEach(cell => {
+        cell.classList.remove("disabled")
+    })
+}
